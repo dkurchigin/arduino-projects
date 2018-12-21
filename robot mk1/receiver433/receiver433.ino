@@ -1,32 +1,28 @@
 #include <VirtualWire.h>
 
 #define LED_PIN 13
-#define ENA A0
-#define ENB A1
-#define IN4 8
-#define IN3 7
-#define IN2 6
-#define IN1 5
-
-#define STOP 0
-#define HALF 150
-#define FULL 255 
+#define TOP_RIGHT_MSFT A0
+#define TOP_LEFT_MSFT A1
+#define BOTTOM_RIGHT_MSFT A2
+#define BOTTOM_LEFT_MSFT A3
 
 int timer;
 
 void setup() {
   Serial.begin(9600);
   pinMode(LED_PIN, OUTPUT);
-  pinMode(ENA, OUTPUT);
-  pinMode(ENB, OUTPUT);
-  pinMode(IN4, OUTPUT);
-  pinMode(IN3, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  pinMode(IN1, OUTPUT);
   vw_set_ptt_inverted(true); 
   vw_set_rx_pin(12);
   vw_setup(1000); 
   vw_rx_start(); 
+  pinMode(TOP_RIGHT_MSFT, OUTPUT);
+  pinMode(TOP_LEFT_MSFT, OUTPUT);
+  pinMode(BOTTOM_RIGHT_MSFT, OUTPUT);
+  pinMode(BOTTOM_LEFT_MSFT, OUTPUT);
+  analogWrite(TOP_RIGHT_MSFT, 255);
+  analogWrite(TOP_LEFT_MSFT, 255);
+  analogWrite(BOTTOM_RIGHT_MSFT, 0);
+  analogWrite(BOTTOM_LEFT_MSFT, 0);
 }
 
 void loop() {
@@ -37,54 +33,44 @@ void loop() {
       if (buf[2] == '4') {
         if (buf[3] == '0') {
           digitalWrite(LED_PIN,HIGH);
-          motor_state(0, STOP, STOP);
+          moveMotor("back");
           delay(100);  
         } else if (buf[3] == '1') {
           digitalWrite(LED_PIN,HIGH);
-          motor_state(1, HALF, FULL);
+          moveMotor("forward");
           delay(100);  
         } else if (buf[3] == '2') {
           digitalWrite(LED_PIN,HIGH);
-          motor_state(2, HALF, FULL);
+          moveMotor("forward");
           delay(100);
         } else if (buf[3] == '3') {
           digitalWrite(LED_PIN,HIGH);
-          motor_state(1, HALF, STOP);
+          moveMotor("forward");
           delay(100);
-        } else if (buf[3] == '4') {
-          digitalWrite(LED_PIN,HIGH);
-          motor_state(1, STOP, FULL);
-          delay(100);
-        }       
+        }     
       }
     }
   } else {
-    if (millis() - timer >= 200) {
-      digitalWrite(LED_PIN,LOW);
-      //delay(100);
-      motor_state(0, STOP, STOP);
-      timer = millis();
-    }
+    moveMotor("stop");
   }
 }
 
-void motor_state(int state, int rightMotor, int leftMotor) {
-  if (state == 0) {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, LOW);
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, LOW);
-  } else if (state == 1) {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
-  } else {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
+void moveMotor(String command) {
+  if (command == "forward") {
+    analogWrite(TOP_RIGHT_MSFT, 255);
+    analogWrite(TOP_LEFT_MSFT, 0);
+    analogWrite(BOTTOM_RIGHT_MSFT, 255);
+    analogWrite(BOTTOM_LEFT_MSFT, 0);
   }
-  analogWrite(ENA, rightMotor);
-  analogWrite(ENB, leftMotor);
+  if (command == "back") {
+    analogWrite(TOP_RIGHT_MSFT, 0);
+    analogWrite(TOP_LEFT_MSFT, 255);
+    analogWrite(BOTTOM_RIGHT_MSFT, 0);
+    analogWrite(BOTTOM_LEFT_MSFT, 255);
+  }if (command == "stop") {
+    analogWrite(TOP_RIGHT_MSFT, 255);
+    analogWrite(TOP_LEFT_MSFT, 255);
+    analogWrite(BOTTOM_RIGHT_MSFT, 0);
+    analogWrite(BOTTOM_LEFT_MSFT, 0);
+  }
 }
