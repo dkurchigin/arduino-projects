@@ -2,12 +2,11 @@
 #include <ServoTimer2.h>
 
 #define LED_PIN 13
-#define TOP_RIGHT_MSFT A0
-#define TOP_LEFT_MSFT A1
-#define BOTTOM_RIGHT_MSFT A2
-#define BOTTOM_LEFT_MSFT A3
+#define RIGHT_MSFTS A2
+#define LEFT_MSFTS A1
 #define RIGHT_SERVO 9
 #define LEFT_SERVO 10
+#define MOTOR_SPEED 150
 
 int timer;
 ServoTimer2 l_servo;
@@ -20,15 +19,11 @@ void setup() {
   vw_set_rx_pin(12);
   vw_setup(1000); 
   vw_rx_start(); 
-  pinMode(TOP_RIGHT_MSFT, OUTPUT);
-  pinMode(TOP_LEFT_MSFT, OUTPUT);
-  pinMode(BOTTOM_RIGHT_MSFT, OUTPUT);
-  pinMode(BOTTOM_LEFT_MSFT, OUTPUT);
-  analogWrite(TOP_RIGHT_MSFT, 0);
-  analogWrite(TOP_LEFT_MSFT, 0);
-  analogWrite(BOTTOM_RIGHT_MSFT, 0);
-  analogWrite(BOTTOM_LEFT_MSFT, 0);
-  moveRobot("all_back");
+  pinMode(RIGHT_MSFTS, OUTPUT);
+  pinMode(LEFT_MSFTS, OUTPUT);
+  analogWrite(RIGHT_MSFTS, 0);
+  analogWrite(LEFT_MSFTS, 0);
+  moveRobot("stop");
 }
 
 void loop() {
@@ -77,10 +72,8 @@ void moveRobot(String command) {
     delay(300);
     l_servo.detach();
     r_servo.detach();
-    analogWrite(TOP_RIGHT_MSFT, 255);
-    analogWrite(TOP_LEFT_MSFT, 0);
-    analogWrite(BOTTOM_RIGHT_MSFT, 0);
-    analogWrite(BOTTOM_LEFT_MSFT, 255);
+    analogWrite(RIGHT_MSFTS, MOTOR_SPEED);
+    analogWrite(LEFT_MSFTS, 0);
     delay(300);
   }
   if (command == "back") {
@@ -91,17 +84,13 @@ void moveRobot(String command) {
     delay(300);
     l_servo.detach();
     r_servo.detach();
-    analogWrite(TOP_RIGHT_MSFT, 0);
-    analogWrite(TOP_LEFT_MSFT, 255);
-    analogWrite(BOTTOM_RIGHT_MSFT, 255);
-    analogWrite(BOTTOM_LEFT_MSFT, 0);
+    analogWrite(RIGHT_MSFTS, 0);
+    analogWrite(LEFT_MSFTS, MOTOR_SPEED);
     delay(300);
   }
   if (command == "stop") {
-    analogWrite(TOP_RIGHT_MSFT, 0);
-    analogWrite(TOP_LEFT_MSFT, 0);
-    analogWrite(BOTTOM_RIGHT_MSFT, 0);
-    analogWrite(BOTTOM_LEFT_MSFT, 0);
+    analogWrite(RIGHT_MSFTS, 0);
+    analogWrite(LEFT_MSFTS, 0);
     l_servo.attach(LEFT_SERVO);
     r_servo.attach(RIGHT_SERVO);
     l_servo.write(1500);/*dont have contact*/
@@ -118,10 +107,8 @@ void moveRobot(String command) {
     delay(300);
     l_servo.detach();
     r_servo.detach();
-    analogWrite(TOP_RIGHT_MSFT, 255);
-    analogWrite(TOP_LEFT_MSFT, 0);
-    analogWrite(BOTTOM_RIGHT_MSFT, 0);
-    analogWrite(BOTTOM_LEFT_MSFT, 255);
+    analogWrite(RIGHT_MSFTS, MOTOR_SPEED);
+    analogWrite(LEFT_MSFTS, 0);
     delay(300);
   }
   if (command == "right") {
@@ -132,10 +119,8 @@ void moveRobot(String command) {
     delay(300);
     l_servo.detach();
     r_servo.detach();
-    analogWrite(TOP_RIGHT_MSFT, 255);
-    analogWrite(TOP_LEFT_MSFT, 0);
-    analogWrite(BOTTOM_RIGHT_MSFT, 0);
-    analogWrite(BOTTOM_LEFT_MSFT, 255);
+    analogWrite(RIGHT_MSFTS, MOTOR_SPEED);
+    analogWrite(LEFT_MSFTS, 0);
     delay(300);
   }
 }
