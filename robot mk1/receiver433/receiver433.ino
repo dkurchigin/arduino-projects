@@ -27,13 +27,6 @@ void setup() {
 }
 
 void loop() {
-  moveRobot("forward");
-  moveRobot("back");
-  moveRobot("left");
-  moveRobot("stop");
-  moveRobot("right");
-  moveRobot("stop");
-  
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
   if (vw_get_message(buf, &buflen)) {  
